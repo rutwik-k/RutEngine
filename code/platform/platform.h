@@ -43,8 +43,8 @@ struct Platform {
     f32 cursor_y;
     f32 cursor_dx;
     f32 cursor_dy;
-    f32 last_x;
-    f32 last_y;
+    f32 last_x = INITIAL_WINDOW_WIDTH / 2;
+    f32 last_y = INITIAL_WINDOW_HEIGHT / 2;
     
     /* Sound */
     int samples_per_sec;
@@ -63,5 +63,13 @@ struct Platform {
 };
 
 global Platform platform = {};
+
+void PlatformUpdateInput(Platform *platform){
+    platform->left_mouse_pressed = 0;
+    platform->cursor_dx = platform->cursor_x - platform->last_x;
+    platform->cursor_dy = platform->last_y - platform->cursor_y;
+    platform->last_x = platform->cursor_x;
+    platform->last_y = platform->cursor_y;
+}
 
 #endif //PLATFORM_H

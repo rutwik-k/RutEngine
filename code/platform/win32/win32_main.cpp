@@ -54,6 +54,11 @@ int WINAPI WinMain(HINSTANCE hInstance,
                                NULL,       // Menu
                                hInstance, // Instance handle
                                NULL);        // Additional application data
+    
+    RECT window_rect;
+    GetWindowRect(hwnd, &window_rect);
+    SetCursorPos(window_rect.right - (INITIAL_WINDOW_WIDTH / 2), window_rect.bottom - (INITIAL_WINDOW_HEIGHT / 2));
+    
     if(hwnd == NULL){
         OutputDebugString("Failed to create window.\n");
         return 0;
@@ -114,6 +119,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
+        Win32UpdateScreenCursor(hwnd, cursor_pos, &platform);
         
         AppUpdate(&platform);
         

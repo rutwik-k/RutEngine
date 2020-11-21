@@ -180,3 +180,14 @@ LRESULT CALLBACK Win32WindowProcedure(HWND hwnd, UINT msg, WPARAM w_param, LPARA
     }
     return result;
 }
+
+internal void Win32UpdateScreenCursor(HWND hwnd, POINT cursor_pos, Platform *platform){
+    GetCursorPos(&cursor_pos);
+    ScreenToClient(hwnd, &cursor_pos);
+    if(platform->cursor_x < 0) platform->cursor_x = 0;
+    if(platform->cursor_y < 0) platform->cursor_y = 0;
+    if(platform->cursor_x > platform->width) platform->cursor_x = platform->width;
+    if(platform->cursor_y > platform->height) platform->cursor_y = platform->height;
+    platform->cursor_x = (f32)cursor_pos.x;
+    platform->cursor_y = (f32)cursor_pos.y;
+}

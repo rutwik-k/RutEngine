@@ -4,7 +4,9 @@
 
 internal void AppInit(){
     RendererInit(&app.renderer);
-    app.camera.pos = Vec3(0, 0, -10);
+    app.camera.pos = Vec3(0, 0, 10);
+    app.camera.front = Vec3(0, 0, 1);
+    app.camera.up = Vec3(0, 1, 0);
 }
 
 internal void AppUpdate(Platform *platform){
@@ -22,7 +24,13 @@ internal void AppUpdate(Platform *platform){
     }
     
     CameraUpdate(&app.camera);
-    RendererStart(&app.renderer, app.camera.pos);
-    RendererDrawCube(&app.renderer);
+    RendererStart(&app.renderer, &app.camera);
+    RendererDrawCube(&app.renderer, &app.camera);
     RendererFinish(&app.renderer);
+    
+    char log[256];
+    snprintf(log, 256, "(%f, %f, %f)", app.platform->cursor_dx, app.platform->cursor_dy);
+    OutputDebugString(log);
+    
+    PlatformUpdateInput(app.platform);
 }

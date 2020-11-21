@@ -11,8 +11,10 @@ struct Camera{
     Vec3 up;
     Vec3 right;
     
-    f32 yaw = -90.0f;
-    f32 pitch;
+    Vec3 direction;
+    
+    f32 yaw = 90.0f;
+    f32 pitch = 0.0f;
     
     b32 moving;
 };

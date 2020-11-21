@@ -4,6 +4,10 @@
 
 #define PI 3.1415926535897
 
+f32 ToRadians(f32 degrees){
+    return degrees*PI/180.0f;
+}
+
 /* Vectors and Matrices types/functions */
 
 struct Vec2{
@@ -29,6 +33,7 @@ b32 operator==(Vec2 a, Vec2 b){
     return result;
 }
 
+
 struct Vec3{
     union{
         struct{
@@ -48,8 +53,32 @@ Vec3 InitVec3(float x, float y, float z){
 
 Vec3 NormaliseVec3(Vec3 vec3){
     f32 length = sqrt((vec3.x * vec3.x) + (vec3.y * vec3.y) + (vec3.z * vec3.z));
-    Vec3 final = Vec3((vec3.x / length), (vec3.y / length), (vec3.z / length));
-    return final;
+    if(length != 0.0f){
+        Vec3 final = Vec3((vec3.x / length), (vec3.y / length), (vec3.z / length));
+        return final;
+    }else{
+        return Vec3(0.0f, 0.0f, 0.0f);
+    }
+}
+
+Vec3 Vec3Cross(Vec3 a, Vec3 b){
+    return Vec3(a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x);
+}
+
+f32 Vec3Dot(Vec3 a, Vec3 b){
+    return a.x*b.x + a.y*b.y + a.z*b.z;
+}
+
+Vec3 operator+(Vec3 a, Vec3 b){
+    return Vec3(a.x + b.x, a.y + b.y, a.z + b.z);
+}
+
+Vec3 operator-(Vec3 a, Vec3 b){
+    return Vec3(a.x - b.x, a.y - b.y, a.z - b.z);
+}
+
+Vec3 operator*(Vec3 a, f32 b){
+    return Vec3(a.x * b, a.y * b, a.z * b);
 }
 
 struct Vec4{
@@ -123,6 +152,35 @@ void Mat4Scale(Mat4 *source, Vec3 amount){
     source->elements[0][0] = amount.x;
     source->elements[1][1] = amount.y;
     source->elements[2][2] = amount.z;
+}
+
+Mat4 Mat4LookAt(Vec3 position, Vec3 target, Vec3 up){
+    Mat4 result = Mat4();
+    Vec3 f = NormaliseVec3(Vec3(position.x - target.x, position.y - target.y, position.z - target.z));
+    Vec3 s = NormaliseVec3(Vec3Cross(f, up));
+    Vec3 u = Vec3Cross(s, f);
+    
+    result.elements[0][0] = s.x;
+    result.elements[0][1] = u.x;
+    result.elements[0][2] = -f.x;
+    result.elements[0][3] = 0.0f;
+    
+    result.elements[1][0] = s.y;
+    result.elements[1][1] = u.y;
+    result.elements[1][2] = -f.y;
+    result.elements[1][3] = 0.0f;
+    
+    result.elements[2][0] = s.z;
+    result.elements[2][1] = u.z;
+    result.elements[2][2] = -f.z;
+    result.elements[2][3] = 0.0f;
+    
+    result.elements[3][0] = -Vec3Dot(s, position);
+    result.elements[3][1] = -Vec3Dot(u, position);
+    result.elements[3][2] = Vec3Dot(f, position);
+    result.elements[3][3] = 1.0f;
+    
+    return result;
 }
 
 /* Creates an orthographic matrix.

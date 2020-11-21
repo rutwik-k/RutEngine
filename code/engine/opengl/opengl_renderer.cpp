@@ -5,6 +5,7 @@
 
 internal void RendererInit(Renderer *renderer){
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_MULTISAMPLE);
     
     glGenVertexArrays(1, &renderer->cube_vao);
     glBindVertexArray(renderer->cube_vao);
@@ -31,7 +32,7 @@ internal void RendererInit(Renderer *renderer){
     
 }
 
-internal void RendererStart(Renderer *renderer, Vec3 camera_pos){
+internal void RendererStart(Renderer *renderer, Camera *camera){
     glClearColor(91.0f / 255.0f, 163.0f / 255.0f, 171.0f / 255.0f, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
@@ -41,15 +42,16 @@ internal void RendererStart(Renderer *renderer, Vec3 camera_pos){
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
     
-    Mat4Translate(&renderer->view, Vec3(-camera_pos.x, camera_pos.y, camera_pos.z));
+    renderer->view = Mat4LookAt(camera->pos, camera->pos + camera->front, camera->up);
 }
 
 //elements model
-internal void RendererDrawCube(Renderer *renderer){
+internal void RendererDrawCube(Renderer *renderer, Camera *camera){
     glUseProgram(renderer->cube_shader);
     glBindVertexArray(renderer->cube_vao);
     ShaderLoadMat4(renderer->cube_shader, renderer->proj, "proj");
     ShaderLoadMat4(renderer->cube_shader, renderer->view, "view");
+    ShaderLoadVec3(renderer->cube_shader, camera->pos, "view_pos");
     glBindBuffer(GL_ARRAY_BUFFER, renderer->cube_vbo);
     glDrawArrays(GL_TRIANGLES, 0, 36);
 }

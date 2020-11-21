@@ -74,6 +74,8 @@ internal b32 Win32InitOpenGL(HWND *hwnd){
         WGL_COLOR_BITS_ARB, 32,
         WGL_DEPTH_BITS_ARB, 24,
         WGL_STENCIL_BITS_ARB, 8,
+        WGL_SAMPLE_BUFFERS_ARB, 1,
+        WGL_SAMPLES_ARB, 4,
         0, // End
     };
     
