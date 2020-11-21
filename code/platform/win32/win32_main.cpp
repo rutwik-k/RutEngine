@@ -1,6 +1,8 @@
 /* Windows/CRT libraries and headers */
 #include <windows.h>
+#include <dsound.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <math.h>
 
 /* My headers */
@@ -17,10 +19,11 @@
 #include "platform/win32/win32_error.cpp"
 #include "platform/win32/win32_file_io.cpp"
 #include "platform/win32/win32_timer.cpp"
+#include "platform/win32/win32_dsound.cpp"
 #if RENDERER_OPENGL == 1
 #include <gl/gl.h>
-#include "graphics/opengl/glext.h"
-#include "graphics/opengl/wglext.h"
+#include "ext/opengl/glext.h"
+#include "ext/opengl/wglext.h"
 #include "platform/win32/win32_opengl.cpp"
 #endif
 
@@ -76,6 +79,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
     platform.should_quit = 0;
     platform.is_initialised = 0;
     platform.target_fps = 60.0f;
+    platform.dt = 1 / platform.target_fps;
     
     platform.permanent_memory_size = PERMANENT_MEMORY_SIZE;
     platform.permanent_memory = VirtualAlloc(0, platform.permanent_memory_size, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
@@ -94,6 +98,15 @@ int WINAPI WinMain(HINSTANCE hInstance,
     Win32Timer timer = {};
     Win32TimerInit(&timer);
     /* ------------------------- */
+    
+    /* Win32 Sound Initialisation */
+    Win32Sound win32_sound = {};
+    platform.samples_per_sec = 48000;
+    platform.bytes_per_sample = 2 * sizeof(i16);
+    platform.channels = 2;
+    Win32InitSound(hwnd, &win32_sound);
+    Win32ClearSoundBuffer(&win32_sound);
+    //Win32FillSoundBuffer(&win32_sound);
     
     while(!platform.should_quit){
         Win32TimerBegin(&timer);

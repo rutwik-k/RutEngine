@@ -1,5 +1,10 @@
+#include "engine/camera.cpp"
+#include "engine/renderer.cpp"
+#include "engine/audio.cpp"
+
 internal void AppInit(){
-    OutputDebugString("Initialised App!");
+    RendererInit(&app.renderer);
+    app.camera.pos = Vec3(0, 0, -10);
 }
 
 internal void AppUpdate(Platform *platform){
@@ -9,6 +14,15 @@ internal void AppUpdate(Platform *platform){
         app.platform->is_initialised = 1;
     }
     
-    glClearColor(91.0f / 255.0f, 163.0f / 255.0f, 171.0f / 255.0f, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    if(app.platform->key_down[KEY_1]){
+        app.renderer.mode = WIREFRAME;
+    }
+    if(app.platform->key_down[KEY_2]){
+        app.renderer.mode = FILL;
+    }
+    
+    CameraUpdate(&app.camera);
+    RendererStart(&app.renderer, app.camera.pos);
+    RendererDrawCube(&app.renderer);
+    RendererFinish(&app.renderer);
 }

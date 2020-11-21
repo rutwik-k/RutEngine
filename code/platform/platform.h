@@ -46,6 +46,13 @@ struct Platform {
     f32 last_x;
     f32 last_y;
     
+    /* Sound */
+    int samples_per_sec;
+    int sample_count;
+    int channels;
+    int bytes_per_sample;
+    void *samples;
+    
     /* File Handling */
     void *(*PlatformReadEntireFileToString)(char *filename);
     b32   (*PlatformWriteToFile)(char *filename, u64 data_size, void *data);

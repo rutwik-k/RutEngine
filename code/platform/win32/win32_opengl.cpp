@@ -4,7 +4,7 @@ global HGLRC opengl_context;
 global PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT;
 
 #define GLProcedure(type, name) PFN##type##PROC name
-#include "graphics/opengl/opengl_procedures.h"
+#include "ext/opengl/opengl_procedures.h"
 
 internal void *Win32LoadOpenGLProcedure(char *procedure){
     void *opengl_proc = wglGetProcAddress(procedure);
@@ -13,7 +13,7 @@ internal void *Win32LoadOpenGLProcedure(char *procedure){
 
 internal void Win32LoadOpenGLProcedures(){
 #define GLProcedure(type, name) name = (PFN##type##PROC)Win32LoadOpenGLProcedure("" #name)
-#include "graphics/opengl/opengl_procedures.h"
+#include "ext/opengl/opengl_procedures.h"
 }
 
 internal b32 Win32InitOpenGL(HWND *hwnd){
