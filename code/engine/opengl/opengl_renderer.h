@@ -21,6 +21,8 @@ struct Renderer{
     GLuint cube_vao;
     GLuint cube_vbo;
     GLuint cube_shader;
+    
+    Camera camera;
 };
 
 

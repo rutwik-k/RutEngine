@@ -3,8 +3,8 @@
 #ifndef APP_MAIN_H
 #define APP_MAIN_H
 
-#include "engine/renderer.h"
 #include "engine/camera.h"
+#include "engine/renderer.h"
 
 struct App{
     Platform *platform;

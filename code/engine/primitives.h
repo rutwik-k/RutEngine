@@ -2,7 +2,7 @@
 #ifndef PRIMITIVES_H
 #define PRIMITIVES_H
 
-const float CUBE_DATA[] = {
+float CUBE_DATA[] = {
     -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,

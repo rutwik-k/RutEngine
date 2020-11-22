@@ -18,9 +18,9 @@ void main()
 
 	//calculate lighting
 	float ambient_strength = 0.5;
-	float specular_strength = 0.5;
+	float specular_strength = 1.0;
 
-	vec3 light_pos = vec3(1, 0, 1);
+	vec3 light_pos = vec3(1, 100, 1);
 	
 	vec3 light_direction = normalize(light_pos - pos);
 	vec3 light_colour = vec3(1.0, 1.0, 1.0);
@@ -28,6 +28,7 @@ void main()
 	vec3 view_dir = normalize(view_pos - pos);
 	vec3 reflect_dir = reflect(-light_direction, normalised_normals);
 	float spec = pow(max(dot(view_dir, reflect_dir), 0.0), 32);
+	
 	vec3 specular = specular_strength * spec * light_colour;
 	
 	float diff = max(dot(normalised_normals, light_direction), 0.0);
@@ -35,11 +36,7 @@ void main()
 	
 	vec3 cube_colour = vec3(1.0, 0.0, 0.0);
 
-	if(view_pos == vec3(0.0, 0.0, 0.0)){
-		cube_colour = vec3(0.0, 0.0, 0.0);
-	}
-
 	vec3 ambient = ambient_strength * light_colour;
-    pass_colour = (ambient + diffuse + specular) * cube_colour;
+    pass_colour = (ambient + diffuse) * cube_colour;
 	//pass_colour = vec3(1.0, 0.0, 0.0);
 }
