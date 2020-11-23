@@ -39,12 +39,19 @@ internal void RendererDrawModel(Renderer *renderer, Model *model, Vec3 pos){
         f32 vert_x = model->initial_data[i * 6];
         f32 vert_y = model->initial_data[i * 6 + 1];
         f32 vert_z = model->initial_data[i * 6 + 2];
+        f32 norm_x = model->initial_data[i * 6];
+        f32 norm_y = model->initial_data[i * 6 + 1];
+        f32 norm_z = model->initial_data[i * 6 + 2];
         
         Vec4 vertex_pos = translate_mat * Vec4(vert_x, vert_y, vert_z, 1.0f);
+        Vec4 normal_pos = translate_mat * Vec4(norm_x, norm_y, norm_z, 0.0f);
         
         model->data[i * 6] = vertex_pos.x;
         model->data[i * 6 + 1] = vertex_pos.y;
         model->data[i * 6 + 2] = vertex_pos.z;
+        model->data[i * 6 + 3] = normal_pos.x;
+        model->data[i * 6 + 4] = normal_pos.y;
+        model->data[i * 6 + 5] = normal_pos.z;
     }
     glBindBuffer(GL_ARRAY_BUFFER, model->vbo);
     glBufferSubData(GL_ARRAY_BUFFER, 0, model->data_size, model->data);
