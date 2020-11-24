@@ -21,12 +21,14 @@ Model RendererLoadModel(Renderer *renderer, float *data, u32 data_size, u32 vert
     
     glUseProgram(model.shader);
     //position
-    glVertexAttribPointer(0, 3, GL_FLOAT, false, 6 * sizeof(f32), (void *)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, false, 9 * sizeof(f32), (void *)0);
     glEnableVertexAttribArray(0);
     //normal
-    glVertexAttribPointer(1, 3, GL_FLOAT, false, 6 * sizeof(f32), (void *)(3 * sizeof(f32)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, false, 9 * sizeof(f32), (void *)(3 * sizeof(f32)));
     glEnableVertexAttribArray(1);
+    //colour
+    glVertexAttribPointer(2, 3, GL_FLOAT, false, 9 * sizeof(f32), (void *)(6 * sizeof(f32)));
+    glEnableVertexAttribArray(2);
     ShaderLoadMat4(model.shader, renderer->proj, "proj");
-    
     return model;
 }

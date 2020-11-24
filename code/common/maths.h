@@ -100,8 +100,22 @@ Vec4 InitVec4(float x, float y, float z, float w){
 
 //NOTE: Use column major, so [column][row]
 
+struct Mat3{
+    float elements[3][3];
+};
+
 struct Mat4{
     float elements[4][4];
+    
+    operator Mat3(){
+        Mat3 mat3 = {};
+        for(int i = 0; i < 3; i++){
+            for(int j = 0; j < 3; j++){
+                mat3.elements[i][j] = elements[i][j];
+            }
+        }
+        return mat3;
+    }
 };
 
 Mat4 InitMat4(){
@@ -183,7 +197,158 @@ Mat4 Mat4LookAt(Vec3 position, Vec3 target, Vec3 up){
     return result;
 }
 
-/* Creates an orthographic matrix.
+void Mat4Transpose(Mat4 *source){
+    Mat4 temp = {};
+    for(int i = 0; i < 4; i++){
+        for(int j = 0; j < 4; j++){
+            temp.elements[i][j] = source->elements[j][i];
+        }
+    }
+    for(int i = 0; i < 4; i++){
+        for(int j = 0; j < 4; j++){
+            source->elements[i][j] = temp.elements[i][j];
+        }
+    }
+}
+
+/* Shamelessly taken from https://stackoverflow.com/questions/1148309/inverting-a-4x4-matrix */
+void Mat4Inverse(Mat4 *source){
+    f32 m[4 * 4];
+    f32 inv[16], det;
+    
+    for(int i = 0; i < 4; i++){
+        for(int j = 0; j < 4; j++){
+            m[(i * 4) + j] = source->elements[i][j];
+        }
+    }
+    
+    inv[0] = m[5]  * m[10] * m[15] - 
+        m[5]  * m[11] * m[14] - 
+        m[9]  * m[6]  * m[15] + 
+        m[9]  * m[7]  * m[14] +
+        m[13] * m[6]  * m[11] - 
+        m[13] * m[7]  * m[10];
+    
+    inv[4] = -m[4]  * m[10] * m[15] + 
+        m[4]  * m[11] * m[14] + 
+        m[8]  * m[6]  * m[15] - 
+        m[8]  * m[7]  * m[14] - 
+        m[12] * m[6]  * m[11] + 
+        m[12] * m[7]  * m[10];
+    
+    inv[8] = m[4]  * m[9] * m[15] - 
+        m[4]  * m[11] * m[13] - 
+        m[8]  * m[5] * m[15] + 
+        m[8]  * m[7] * m[13] + 
+        m[12] * m[5] * m[11] - 
+        m[12] * m[7] * m[9];
+    
+    inv[12] = -m[4]  * m[9] * m[14] + 
+        m[4]  * m[10] * m[13] +
+        m[8]  * m[5] * m[14] - 
+        m[8]  * m[6] * m[13] - 
+        m[12] * m[5] * m[10] + 
+        m[12] * m[6] * m[9];
+    
+    inv[1] = -m[1]  * m[10] * m[15] + 
+        m[1]  * m[11] * m[14] + 
+        m[9]  * m[2] * m[15] - 
+        m[9]  * m[3] * m[14] - 
+        m[13] * m[2] * m[11] + 
+        m[13] * m[3] * m[10];
+    
+    inv[5] = m[0]  * m[10] * m[15] - 
+        m[0]  * m[11] * m[14] - 
+        m[8]  * m[2] * m[15] + 
+        m[8]  * m[3] * m[14] + 
+        m[12] * m[2] * m[11] - 
+        m[12] * m[3] * m[10];
+    
+    inv[9] = -m[0]  * m[9] * m[15] + 
+        m[0]  * m[11] * m[13] + 
+        m[8]  * m[1] * m[15] - 
+        m[8]  * m[3] * m[13] - 
+        m[12] * m[1] * m[11] + 
+        m[12] * m[3] * m[9];
+    
+    inv[13] = m[0]  * m[9] * m[14] - 
+        m[0]  * m[10] * m[13] - 
+        m[8]  * m[1] * m[14] + 
+        m[8]  * m[2] * m[13] + 
+        m[12] * m[1] * m[10] - 
+        m[12] * m[2] * m[9];
+    
+    inv[2] = m[1]  * m[6] * m[15] - 
+        m[1]  * m[7] * m[14] - 
+        m[5]  * m[2] * m[15] + 
+        m[5]  * m[3] * m[14] + 
+        m[13] * m[2] * m[7] - 
+        m[13] * m[3] * m[6];
+    
+    inv[6] = -m[0]  * m[6] * m[15] + 
+        m[0]  * m[7] * m[14] + 
+        m[4]  * m[2] * m[15] - 
+        m[4]  * m[3] * m[14] - 
+        m[12] * m[2] * m[7] + 
+        m[12] * m[3] * m[6];
+    
+    inv[10] = m[0]  * m[5] * m[15] - 
+        m[0]  * m[7] * m[13] - 
+        m[4]  * m[1] * m[15] + 
+        m[4]  * m[3] * m[13] + 
+        m[12] * m[1] * m[7] - 
+        m[12] * m[3] * m[5];
+    
+    inv[14] = -m[0]  * m[5] * m[14] + 
+        m[0]  * m[6] * m[13] + 
+        m[4]  * m[1] * m[14] - 
+        m[4]  * m[2] * m[13] - 
+        m[12] * m[1] * m[6] + 
+        m[12] * m[2] * m[5];
+    
+    inv[3] = -m[1] * m[6] * m[11] + 
+        m[1] * m[7] * m[10] + 
+        m[5] * m[2] * m[11] - 
+        m[5] * m[3] * m[10] - 
+        m[9] * m[2] * m[7] + 
+        m[9] * m[3] * m[6];
+    
+    inv[7] = m[0] * m[6] * m[11] - 
+        m[0] * m[7] * m[10] - 
+        m[4] * m[2] * m[11] + 
+        m[4] * m[3] * m[10] + 
+        m[8] * m[2] * m[7] - 
+        m[8] * m[3] * m[6];
+    
+    inv[11] = -m[0] * m[5] * m[11] + 
+        m[0] * m[7] * m[9] + 
+        m[4] * m[1] * m[11] - 
+        m[4] * m[3] * m[9] - 
+        m[8] * m[1] * m[7] + 
+        m[8] * m[3] * m[5];
+    
+    inv[15] = m[0] * m[5] * m[10] - 
+        m[0] * m[6] * m[9] - 
+        m[4] * m[1] * m[10] + 
+        m[4] * m[2] * m[9] + 
+        m[8] * m[1] * m[6] - 
+        m[8] * m[2] * m[5];
+    
+    det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
+    
+    if (det == 0)
+        exit(-1);
+    
+    det = 1.0 / det;
+    
+    for (int i = 0; i < 4; i++){
+        for(int j = 0; j < 4; j++){
+            source->elements[i][j] = inv[(i * 4) + j] * det;
+        }
+    }
+}
+
+/* Creates an orthographic source->elementsatrix.
 https://en.wikipedia.org/wiki/Orthographic_projection
 */
 Mat4 CreateOrthographicMat4(f32 left, f32 right, f32 bottom, f32 top, f32 near_, f32 far_){
@@ -236,6 +401,14 @@ Vec4 operator*(Mat4 a, Vec4 b){
 	result.y = (a.elements[0][1] * b.x) + (a.elements[1][1] * b.y) + (a.elements[2][1] * b.z) + (a.elements[3][1] * b.w );
 	result.z = (a.elements[0][2] * b.x) + (a.elements[1][2] * b.y) + (a.elements[2][2] * b.z) + (a.elements[3][2] * b.w );
 	result.w = (a.elements[0][3] * b.x) + (a.elements[1][3] * b.y) + (a.elements[2][3] * b.z) + (a.elements[3][3] * b.w );
+	return result;
+}
+
+Vec3 operator*(Mat3 a, Vec3 b){
+	Vec3 result = {{0.0f, 0.0f, 0.0f}};
+	result.x = (a.elements[0][0] * b.x) + (a.elements[1][0] * b.y) + (a.elements[2][0] * b.z);
+	result.y = (a.elements[0][1] * b.x) + (a.elements[1][1] * b.y) + (a.elements[2][1] * b.z);
+	result.z = (a.elements[0][2] * b.x) + (a.elements[1][2] * b.y) + (a.elements[2][2] * b.z);
 	return result;
 }
 

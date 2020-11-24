@@ -14,7 +14,7 @@ internal void RendererInit(Renderer *renderer){
 }
 
 internal void RendererStart(Renderer *renderer, Camera camera){
-    glClearColor(91.0f / 255.0f, 163.0f / 255.0f, 171.0f / 255.0f, 1.0);
+    glClearColor(22.0f / 255.0f, 23.0f / 255.0f, 23.0f / 255.0f, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     renderer->camera = camera;
     
@@ -28,30 +28,36 @@ internal void RendererStart(Renderer *renderer, Camera camera){
 }
 
 //elements model
-internal void RendererDrawModel(Renderer *renderer, Model *model, Vec3 pos){
+internal void RendererDrawModel(Renderer *renderer, Light *light, Model *model, Vec3 pos, Vec3 colour){
     glUseProgram(model->shader);
     glBindVertexArray(model->vao);
     
     Mat4 translate_mat = Mat4Identity();
     Mat4Translate(&translate_mat, pos);
+    Mat4 normal_mat = translate_mat;
     
     for(int i = 0; i < model->vertex_count; i++){
-        f32 vert_x = model->initial_data[i * 6];
-        f32 vert_y = model->initial_data[i * 6 + 1];
-        f32 vert_z = model->initial_data[i * 6 + 2];
-        f32 norm_x = model->initial_data[i * 6];
-        f32 norm_y = model->initial_data[i * 6 + 1];
-        f32 norm_z = model->initial_data[i * 6 + 2];
+        f32 vert_x = model->initial_data[i * 9];
+        f32 vert_y = model->initial_data[i * 9 + 1];
+        f32 vert_z = model->initial_data[i * 9 + 2];
+        f32 norm_x = model->initial_data[i * 9];
+        f32 norm_y = model->initial_data[i * 9 + 1];
+        f32 norm_z = model->initial_data[i * 9 + 2];
         
         Vec4 vertex_pos = translate_mat * Vec4(vert_x, vert_y, vert_z, 1.0f);
-        Vec4 normal_pos = translate_mat * Vec4(norm_x, norm_y, norm_z, 0.0f);
+        Mat4Inverse(&normal_mat);
+        Mat4Transpose(&normal_mat);
+        Vec3 normal_pos = Mat3(normal_mat) * Vec3(norm_x, norm_y, norm_z);
         
-        model->data[i * 6] = vertex_pos.x;
-        model->data[i * 6 + 1] = vertex_pos.y;
-        model->data[i * 6 + 2] = vertex_pos.z;
-        model->data[i * 6 + 3] = normal_pos.x;
-        model->data[i * 6 + 4] = normal_pos.y;
-        model->data[i * 6 + 5] = normal_pos.z;
+        model->data[i * 9] = vertex_pos.x;
+        model->data[i * 9 + 1] = vertex_pos.y;
+        model->data[i * 9 + 2] = vertex_pos.z;
+        model->data[i * 9 + 3] = normal_pos.x;
+        model->data[i * 9 + 4] = normal_pos.y;
+        model->data[i * 9 + 5] = normal_pos.z;
+        model->data[i * 9 + 6] = colour.r;
+        model->data[i * 9 + 7] = colour.g;
+        model->data[i * 9 + 8] = colour.b;
     }
     glBindBuffer(GL_ARRAY_BUFFER, model->vbo);
     glBufferSubData(GL_ARRAY_BUFFER, 0, model->data_size, model->data);
@@ -59,6 +65,8 @@ internal void RendererDrawModel(Renderer *renderer, Model *model, Vec3 pos){
     ShaderLoadMat4(model->shader, renderer->proj, "proj");
     ShaderLoadMat4(model->shader, renderer->view, "view");
     ShaderLoadVec3(model->shader, renderer->camera.pos, "view_pos");
+    ShaderLoadVec3(model->shader, light->pos, "light_pos");
+    ShaderLoadVec3(model->shader, light->colour, "light_colour");
     glDrawArrays(GL_TRIANGLES, 0, model->vertex_count);
 }
 
