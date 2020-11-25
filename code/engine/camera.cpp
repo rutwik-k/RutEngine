@@ -13,25 +13,27 @@ internal void CameraUpdate(Camera *camera){
     camera->front = NormaliseVec3(camera->direction);
     
     if(app.platform->key_down[KEY_W]){
-        camera->pos = camera->pos - Vec3(camera->front.x * CAMERA_SPEED * app.platform->dt, camera->front.y * CAMERA_SPEED * app.platform->dt,
-                                         camera->front.z * CAMERA_SPEED * app.platform->dt);
+        camera->target_pos = camera->pos - Vec3(camera->front.x * CAMERA_SPEED * app.platform->dt, camera->front.y * CAMERA_SPEED * app.platform->dt,
+                                                camera->front.z * CAMERA_SPEED * app.platform->dt);
     }
     if(app.platform->key_down[KEY_A]){
-        camera->pos = camera->pos + NormaliseVec3(Vec3Cross(camera->front, camera->up)) * CAMERA_SPEED * app.platform->dt;
+        camera->target_pos = camera->pos + NormaliseVec3(Vec3Cross(camera->front, camera->up)) * CAMERA_SPEED * app.platform->dt;
     }
     if(app.platform->key_down[KEY_S]){
-        camera->pos = camera->pos + Vec3(camera->front.x * CAMERA_SPEED * app.platform->dt, camera->front.y * CAMERA_SPEED * app.platform->dt,
-                                         camera->front.z * CAMERA_SPEED * app.platform->dt);
+        camera->target_pos = camera->pos + Vec3(camera->front.x * CAMERA_SPEED * app.platform->dt, camera->front.y * CAMERA_SPEED * app.platform->dt,
+                                                camera->front.z * CAMERA_SPEED * app.platform->dt);
     }
     if(app.platform->key_down[KEY_D]){
-        camera->pos = camera->pos - NormaliseVec3(Vec3Cross(camera->front, camera->up)) * CAMERA_SPEED * app.platform->dt;
+        camera->target_pos = camera->pos - NormaliseVec3(Vec3Cross(camera->front, camera->up)) * CAMERA_SPEED * app.platform->dt;
     }
     if(app.platform->key_down[KEY_SPACE]){
-        camera->pos = camera->pos + Vec3(camera->up.x * CAMERA_SPEED * app.platform->dt, camera->up.y * CAMERA_SPEED * app.platform->dt,
-                                         camera->up.z * CAMERA_SPEED * app.platform->dt);
+        camera->target_pos = camera->pos + Vec3(camera->up.x * CAMERA_SPEED * app.platform->dt, camera->up.y * CAMERA_SPEED * app.platform->dt,
+                                                camera->up.z * CAMERA_SPEED * app.platform->dt);
     }
     if(app.platform->key_down[KEY_SHIFT]){
-        camera->pos = camera->pos - Vec3(camera->up.x * CAMERA_SPEED * app.platform->dt, camera->up.y * CAMERA_SPEED * app.platform->dt,
-                                         camera->up.z * CAMERA_SPEED * app.platform->dt);
+        camera->target_pos = camera->pos - Vec3(camera->up.x * CAMERA_SPEED * app.platform->dt, camera->up.y * CAMERA_SPEED * app.platform->dt,
+                                                camera->up.z * CAMERA_SPEED * app.platform->dt);
     }
+    
+    camera->pos = Vec3Lerp(camera->pos, camera->target_pos, 0.1f);
 }

@@ -2,10 +2,11 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#define CAMERA_SPEED 20
+#define CAMERA_SPEED 100
 
 struct Camera{
     Vec3 pos;
+    Vec3 target_pos;
     Vec3 velocity;
     Vec3 front;
     Vec3 up;

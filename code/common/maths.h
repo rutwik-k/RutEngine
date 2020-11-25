@@ -8,6 +8,10 @@ f32 ToRadians(f32 degrees){
     return degrees*PI/180.0f;
 }
 
+f32 Lerp(float a, float b, float t){
+    return a + t * (b-a);
+}
+
 /* Vectors and Matrices types/functions */
 
 struct Vec2{
@@ -44,6 +48,14 @@ struct Vec3{
         };
     };
 };
+
+Vec3 Vec3Lerp(Vec3 a, Vec3 b, float t){
+    Vec3 result = {};
+    result.x = Lerp(a.x, b.x, t);
+    result.y = Lerp(a.y, b.y, t);
+    result.z = Lerp(a.z, b.z, t);
+    return result;
+}
 
 Vec3 InitVec3(float x, float y, float z){
     Vec3 v3 = {x, y, z};
