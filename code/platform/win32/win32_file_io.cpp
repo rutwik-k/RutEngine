@@ -5,7 +5,8 @@ void Win32FreeFile(void *data){
 }
 
 /* note - could turn this into a struct if we ever needed to know the size of the file. */
-void *Win32ReadEntireFileToString(char *filename){
+FileContents Win32ReadEntireFileToString(char *filename){
+    FileContents file_contents = {};
     SetCurrentDirectory("..\\data\\");
     HANDLE file_handle;
     char *data;
@@ -18,6 +19,8 @@ void *Win32ReadEntireFileToString(char *filename){
                 if(ReadFile(file_handle,(void *) data, file_size, &bytes_read, 0) && (file_size == bytes_read)){
                     //null terminator
                     data[file_size] = '\0';
+                    file_contents.bytes = file_size;
+                    file_contents.data = data;
                 }else{
                     Win32FreeFile(data);
                 }
@@ -29,7 +32,7 @@ void *Win32ReadEntireFileToString(char *filename){
         wsprintf(filename_to_print, "Couldn't load file %s\n", filename);
         Win32DisplayError("Error loading file", filename_to_print);
     }
-    return data;
+    return file_contents;
 }
 
 //havent tested lol

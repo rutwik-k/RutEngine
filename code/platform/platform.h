@@ -9,6 +9,11 @@
 #define PERMANENT_MEMORY_SIZE megabytes(512)
 #define FRAME_MEMORY_SIZE megabytes(1)
 
+struct FileContents{
+    char *data;
+    u32 bytes;
+};
+
 struct Platform {
     /* Window */
     u32 width;
@@ -54,7 +59,7 @@ struct Platform {
     void *samples;
     
     /* File Handling */
-    void *(*PlatformReadEntireFileToString)(char *filename);
+    FileContents (*PlatformReadEntireFileToString)(char *filename);
     b32   (*PlatformWriteToFile)(char *filename, u64 data_size, void *data);
     void  (*PlatformFreeFile)(void *data);
     

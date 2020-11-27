@@ -7,9 +7,9 @@
 #define MAX_INITIAL_SIZE 512
 
 struct Model{
-    GLuint vao;
-    GLuint vbo;
-    GLuint shader;
+    //GLuint vao;
+    //GLuint vbo;
+    Material material;
     
     f32 *data;
     u32 data_size;
@@ -17,6 +17,6 @@ struct Model{
     f32 initial_data[MAX_INITIAL_SIZE];
     
     u32 vertex_count;
-}
+};
 
 #endif //OPENGL_MODEL_H

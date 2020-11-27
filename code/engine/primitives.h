@@ -2,6 +2,19 @@
 #ifndef PRIMITIVES_H
 #define PRIMITIVES_H
 
+const f32 QUAD_DATA[] = {
+    //x     y     z   | r     g     b     a   |  u     v*/
+    0.0f,  0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,  0.0f, 0.0f,
+    0.0f,  1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,  0.0f, 1.0f,
+    1.0f,  0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,  1.0f, 0.0f,
+    1.0f,  1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,  1.0f, 1.0f
+};
+
+const u32 QUAD_INDICES[] = {
+    0, 2, 3,
+    0, 1, 3
+};
+
 float CUBE_DATA[] = {
     -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, 1.0f,
     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, 1.0f,

@@ -1,7 +1,7 @@
 internal GLuint CreateOpenGLShader(char *vertex_source_file, char *fragment_source_file){
-    char *vertex_source = (char *)app.platform->PlatformReadEntireFileToString(vertex_source_file);
+    char *vertex_source = (app.platform->PlatformReadEntireFileToString(vertex_source_file)).data;
     
-    char *fragment_source = (char *) app.platform->PlatformReadEntireFileToString(fragment_source_file);
+    char *fragment_source = (app.platform->PlatformReadEntireFileToString(fragment_source_file)).data;
     
     GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_shader, 1, &vertex_source, NULL);
