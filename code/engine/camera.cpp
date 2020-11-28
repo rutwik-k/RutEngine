@@ -1,8 +1,10 @@
 internal void CameraUpdate(Camera *camera){
     camera->velocity = Vec3(0, 0, 0);
     
-    camera->yaw   += app.platform->cursor_dx * 0.1f;
-    camera->pitch -= app.platform->cursor_dy * 0.1f;
+    if(app.platform->left_mouse_down){
+        camera->yaw   += app.platform->cursor_dx * 0.1f;
+        camera->pitch -= app.platform->cursor_dy * 0.1f;
+    }
     if(camera->pitch > 90.0f) camera->pitch = 90.0f;
     if(camera->pitch < -90.0f) camera->pitch = -90.0f;
     

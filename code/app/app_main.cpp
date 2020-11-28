@@ -42,18 +42,15 @@ internal void AppUpdate(Platform *platform){
     RendererStart(&app.renderer, app.camera);
     RendererSetLight(&app.renderer, light);
     
-    for(int i = 0; i < 32; i++){
-        for(int j = 0; j < 32; j++){
-            RendererDrawModel(&app.renderer, &light, &cube, Vec3(i * 1, 0, j * 1), Vec3(0.5f, 0.2f, 1.0f));
-        }
-    }
+    RendererDrawModel(&app.renderer, &light, &cube, Vec3(0, 0, 0), Vec3(235.0f / 255.0f, 64.0f / 255.0f, 52.0f / 255.0f));
+    RendererDrawModel(&app.renderer, &light, &cube, Vec3(10, 2, 0), Vec3(237.0f / 255.0f, 150.0f / 255.0f, 57.0f / 255.0f));
+    RendererDrawModel(&app.renderer, &light, &cube, Vec3(-10, 0, 3), Vec3(70.0f / 255.0f, 171.0f / 255.0f, 63.0f / 255.0f));
+    
     RendererDrawModel(&app.renderer, &light, &cube, Vec3(light.pos.x, light.pos.y, light.pos.z), Vec3(1.0f, 1.0f, 1.0f));
     
-    RendererDrawQuad(&app.renderer, Vec4(0, 0, 100, 100), Vec4(0.1f, 0.4f, 0.2f, 1.0f));
+    //RendererDrawQuad(&app.renderer, Vec4(0, 0, 100, 100), Vec4(0.1f, 0.4f, 0.2f, 1.0f));
     RendererFinish(&app.renderer);
     
-    light.pos.x += 50.0f * cosf(sine_value * 0.1f) * app.platform->dt;
-    light.pos.z += 50.0f * sinf(sine_value * 0.1f) * app.platform->dt;
     sine_value++;
     
     //char log[256];
